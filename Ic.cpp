@@ -32,6 +32,7 @@ class State {
         map<string, bool> atomicPropositions; //Liste des états des propositions atomiques associées à l'état
         //Pas encore sur pour les transitions
         //map<string, State*> transitions; //Liste des transitions associées à l'état
+        set<State*> transitions;
     public:
         State(string n){
             name = n;
@@ -60,6 +61,7 @@ class State {
 
 };
 
+//TODo: Class Expression
 class Expression {
     private:
     public:
@@ -70,6 +72,11 @@ class ST {
         string name;
         set<State> states;
         set<State> initialState;
+
+        set<State> R;           // États visités
+        stack<State> U;         // Pile pour l'exploration
+        bool b;                 // Indicateur de validité
+
     public:
         ST(string n, set<State> s, set<State> i){
             name = n;
@@ -80,6 +87,47 @@ class ST {
                 }
             }
         }
+        void addState(State s){
+            states.insert(s);
+            if (s.getIsInitial()){
+                initialState.insert(s);
+            }
+        }
+        
+        bool verifyInvariant(Expression expr){
+            // TODO: Implémentation de la vérification de l'invariant
+            return true; 
+        }
+
+        void visit(State s){
+           // TODO
+        }
+
+        void cheking(Expression expr){
+            // Initialisation
+            R.clear();
+            while(!U.empty()) U.pop();
+            b = true;
+
+            // Pousser les états initiaux dans la pile U
+            for(auto state : initialState){
+                U.push(state);
+            }
+
+            // Exploration des états
+            while(!U.empty() && b){ // I \ R non vide et b vrai
+                visit(U.top());
+                U.pop();
+            }
+
+            if(b){
+                cout << "L'invariant est vérifié pour tous les états accessibles." << endl;
+            } else {
+                cout << "L'invariant n'est pas vérifié." << endl;
+            }   
+        }
+
+
 
 
 };
