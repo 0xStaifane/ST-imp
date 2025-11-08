@@ -1,2 +1,2 @@
 # ST-imp
-A C++ implementation of an transition system 
+A invariant checking of a transition system 
