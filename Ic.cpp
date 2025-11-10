@@ -161,7 +161,7 @@ private:
     
 };
 
-// Implémentation de AtomicExpr::evaluate 
+// Retourne le résultat de l'évaluation d'une proposition atomique dans un état donné
 bool AtomicExpr::evaluate(const StatePtr& s) const {
     return s->getAtomicProposition(propName);
 }
@@ -388,16 +388,16 @@ int main() {
     ST system("Section_Critique");
     
     // Créer les états
-    StatePtr s0 = system.createState("NC1,NC2|Unlock", true);  // État initial
-    StatePtr s1 = system.createState("NC1,C2|Lock");
-    StatePtr s2 = system.createState("C1,NC2|Lock");
+    StatePtr s0 = system.createState("NC1,NC2|Unlock", true);  // État initial : aucun processus dans la section critique
+    StatePtr s1 = system.createState("NC1,C2|Lock"); // C2 dans la section critique
+    StatePtr s2 = system.createState("C1,NC2|Lock"); // C1 dans la section critique
     
     // Définir les propositions atomiques pour chaque état
+    s0->setAtomicProposition(""); // Aucun processus dans la section critique
+
     s1->setAtomicProposition("C1");
-    //s1->setAtomicProposition("q");
     
     s2->setAtomicProposition("C2");
-    //s2->setAtomicProposition("q");
     
     // Définir les transitions
     system.addTransition(s0, s1);//Aquire Lock par P1
@@ -433,6 +433,7 @@ int main() {
 
     // Définir les propositions atomiques pour chaque état
     // État q0 : ¬rouge ∧ ¬orange (ni rouge ni orange)
+    q0->setAtomicProposition("");  // Aucune proposition vraie
 
     // État q1 : ¬rouge ∧ orange (orange mais pas rouge)
     q1->setAtomicProposition("orange");
@@ -470,7 +471,7 @@ int main() {
         cout << "\n Erreur: Il existe un état où rouge ET orange sont vrais simultanément !" << endl;
     }
 
-    // Test supplémentaire : vérifier que "orange" est parfois vrai
+    // Test supplémentaire : vérifier que "orange" est parfois accessible
     cout << "\n\n" << string(50, '=') << endl;
     cout << "\n\nTest 3: Vérification que 'orange' est accessible" << endl;
     ExprPtr test_orange = ExprBuilder::atom("orange");
